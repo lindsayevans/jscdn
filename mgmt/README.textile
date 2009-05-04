@@ -1,0 +1,41 @@
+h1. ActiveRecord Skeleton
+
+A basic skeleton for ActiveRecord-backed Ruby apps
+
+http://blog.olszowka.de/2009/02/21/introducing-activerecord-skeleton/
+
+h2. Features
+
+* YAML database config
+* Rake tasks for generating migrations and migrating the database
+* Reasonable, Rails-style directory structure
+* Ready to go with SQLite 3
+* RACK_ENV-aware and thus ready to use with multiple environments with Sinatra or any other Rack-backed webapp framework
+* Logging for ActiveRecord
+
+h2. Setup
+
+# Get and extract "tarball":http://github.com/colszowka/activerecord-skeleton/tarball/master or git clone this repository
+# Copy config/database.sample.yml to config/database.yml
+# Create a migration with <code>rake generate:migration NAME=create_users</code> and add your code in <code>db/migrate/001_create_users.rb</code>
+# <code>rake migrate</code> (if you stick to the default SQLite setup, the database for the current environment will be automatically created upon migration)
+# Create a model in lib/user.rb: <code>class User < ActiveRecord::Base; end;</code>
+# Add application code in project root directory and <code>require 'init'</code> in it
+
+h2. Example for usage with "Sinatra":http://www.github.com/sinatra/sinatra
+
+In your application file (say <code>app.rb</code> sitting in the project root), simply add <code>require 'init'</code> <b>after</b> <code>require 'sinatra'</code>.
+
+A basic sinatra app.rb might look like following (assuming you've got the user model setup and migrated)
+<pre>
+require 'sinatra'
+require 'init'
+
+get '/' do
+  User.all.map {|u| u.name}.to_sentence
+end
+</pre>
+
+h2. Copyright
+
+activerecord-skeleton is Copyright &copy; 2009 Christoph Olszowka, It is free software, and may be redistributed under the terms specified in the MIT-LICENSE file.

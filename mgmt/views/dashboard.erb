@@ -1,0 +1,10 @@
+<h1>Dashboard</h1>
+<section id="distribution_servers">
+    <header><h2>Distribution servers</h2> <a href="#">add</a></header>
+    <dl>
+<% @distribution_servers.each do |server| %>
+	<dt><%= server.name %></dt>
+	<dd><%= server.online? ? 'online' : 'offline' %></dd>
+<% end %>
+    </dl>
+</section>
