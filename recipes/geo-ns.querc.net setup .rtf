@@ -6,17 +6,14 @@
 
 \f0\fs24 \cf0 gns1.querc.net setup\
 \
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
-\cf0 \
+\
 # Dependencies\
 yum update\
 yum install gcc gcc-c++ libc6 libc6-dev make less pcre pcre-devel libgcrypt libgcrypt-devel zlib-devel logrotate patch\
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
-\cf0 \
+\
 mkdir ~/src\
 \
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
-\cf0 \
+\
 # Install GeoIP C API\
 cd ~/src\
 wget http://geolite.maxmind.com/download/geoip/api/c/GeoIP.tar.gz\
@@ -30,16 +27,14 @@ sudo make install\
 # test\
 apps/geoiplookup querc.net\
 apps/geoiplookup linz.id.au\
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
-\cf0 \
+\
 \
 # BIND9 setup\
 cd ~/src\
 wget http://ftp.isc.org/isc/bind9/9.4.3-P2/bind-9.4.3-P2.tar.gz\
 tar zxvf bind-9.4.3-P2.tar.gz\
 rm bind-9.4.3-P2.tar.gz\
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
-\cf0 \
+\
 # don't configure yet, need to patch for geodns\
 \
 # patch for geodns\
@@ -63,8 +58,7 @@ sudo vi /etc/ld.so.conf\
 #add:\
 #/usr/local/lib\
 sudo ldconfig\
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
-\cf0 \
+\
 make\
 sudo make install\
 \
@@ -73,8 +67,7 @@ sudo make install\
 sudo mkdir /var/named\
 sudo dig @a.root-servers.net . ns > /var/named/named.ca\
 sudo vi /etc/named.conf\
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
-\cf0 sudo vi /var/named/jscdn.net-au\
+sudo vi /var/named/jscdn.net-au\
 sudo vi /var/named/jscdn.net-global\
 \
 sudo vi /etc/init.d/named\
@@ -89,11 +82,9 @@ sudo mkdir /var/log/named/\
 sudo touch /var/log/named/jscdn.log\
 \
 \
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
-\cf0 # TODO: remote zone file change (allow from mgmt.jscdn.net)\
+# TODO: remote zone file change (allow from mgmt.jscdn.net)\
 # TODO: logrotate (does BIND already do this?)\
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
-\cf0 \
+\
 \
 # disable root SSH login\
 sudo vi /etc/ssh/sshd_config\
@@ -101,7 +92,7 @@ sudo vi /etc/ssh/sshd_config\
 sudo /etc/init.d/sshd restart\
 \
 \
-# Firewall config - not working?\
+# Firewall config\
 sudo vi /etc/sysconfig/iptables\
 \
 # Add after similar port 22 rule:\
