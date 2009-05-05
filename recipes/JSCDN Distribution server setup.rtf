@@ -1,0 +1,323 @@
+{\rtf1\ansi\ansicpg1252\cocoartf949\cocoasubrtf430
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww18020\viewh12160\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
+
+\f0\fs24 \cf0 # JSCDN distribution server setup - Fedora 10\
+\
+# TODO: wget config files from master server, nginx optimisation (threads?, workers per cpu, worker_connections per 128MB RAM, worker_rlimit_nofile, hash buckets etc.); make this all an install script, then can be downloaded by 3rd party dist server owners; public key for jscdn user so we can SSH in with rsync; allow jscdn user to access nginx config? (maybe not)\
+# TODO: slice optimisation - http://wiki.slicehost.com/doku.php?id=harddiskoptimization\
+# TODO: Nginx JSON status module\
+# TODO: api.jscdn.net - metadata on libs, latest v, release date, size etc. (static based on same principles as .js?) - mebee nginx module to stick JSONP callback into response - api. vs. same server? (pr. wont be able to use .js)\
+\
+\
+# create new users\
+groupadd www\
+useradd -g www www\
+useradd -g www jscdn\
+passwd jscdn\
+\
+# Dependencies\
+yum update\
+yum install gcc gcc-c++ libc6 libc6-dev make less pcre pcre-devel libgcrypt libgcrypt-devel zlib-devel logrotate\
+\
+# Update open file limit (as root)\
+echo "65535" > /proc/sys/fs/file-max\
+vi /etc/sysctl.conf\
+# fs.file-max = 65535\
+\
+mkdir ~/src\
+\
+# JSCDN\
+mkdir /var/www/\
+mkdir /var/www/jscdn.net/\
+mkdir /var/www/jscdn.net/public/\
+mkdir /var/www/jscdn.net/logs/\
+chmod -R 775 /var/www/jscdn.net\
+\
+# TODO: grab current files from master server\
+\
+# Firewall config\
+vi /etc/sysconfig/iptables\
+\
+# Add after similar port 22 rule:\
+# -A INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT\
+/sbin/service iptables restart\
+\
+\
+# Setup logrotate\
+vi /etc/logrotate.conf\
+\
+# Add:\
+# TODO: add hostname or something to email\
+/*\
+/var/www/jscdn.net/logs/*log /var/log/nginx/*log \{\
+    missingok\
+    daily\
+    rotate 7\
+    compress\
+    delaycompress\
+    notifempty\
+    mail logs@jscdn.net\
+    sharedscripts\
+    postrotate\
+        /bin/kill -10 `cat /var/run/nginx/nginx.pid 2>/dev/null` 2> /dev/null || true\
+    endscript\
+\}\
+*/\
+\
+# Install rsync\
+cd ~/src\
+wget http://www.samba.org/ftp/rsync/rsync-3.0.5.tar.gz\
+tar zxvf rsync-3.0.5.tar.gz\
+rm rsync-3.0.5.tar.gz\
+cd rsync-3.0.5\
+./configure\
+make\
+make install\
+\
+# Nginx setup (TODO: grab released files from Github)\
+\
+cd ~/src\
+wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-7.9.tar.gz\
+tar zxvf pcre-7.9.tar.gz\
+\
+wget -O nginx-static-etags.tar.gz http://github.com/mikewest/nginx-static-etags/tarball/master\
+tar zxvf nginx-static-etags.tar.gz\
+rm nginx-static-etags.tar.gz\
+mv mikewest<TAB> nginx-static-etags\
+\
+wget -O nginx-json-status.tar.gz http://github.com/lindsayevans/nginx-json-status-module/tarball/master\
+tar zxvf nginx-json-status.tar.gz\
+rm nginx-json-status.tar.gz\
+mv lindsayevans<TAB> nginx-json-status\
+\
+# Download & configure Nginx\
+# TODO: optimise\
+# TODO: add etags module\
+cd ~/src\
+wget http://sysoev.ru/nginx/nginx-0.6.36.tar.gz\
+tar zxvf nginx-0.6.36.tar.gz\
+rm nginx-0.6.36.tar.gz\
+cd nginx-0.6.36\
+./configure \\\
+--add-module=../nginx-static-etags \\\
+--add-module=../nginx-json-status \\\
+--with-http_stub_status_module \\\
+--with-http_gzip_static_module \\\
+--without-http_ssi_module \\\
+--without-http_userid_module \\\
+--without-http_access_module \\\
+--without-http_auth_basic_module \\\
+--without-http_autoindex_module \\\
+--without-http_geo_module \\\
+--without-http_map_module \\\
+--without-http_referer_module \\\
+--without-http_rewrite_module \\\
+--without-http_proxy_module \\\
+--without-http_fastcgi_module \\\
+--without-http_memcached_module \\\
+--without-http_limit_zone_module \\\
+--without-http_empty_gif_module \\\
+--without-http_browser_module \\\
+--without-http_upstream_ip_hash_module \\\
+--with-pcre=../pcre-7.9 \\\
+--with-md5-asm \\\
+--with-md5=/usr/include \\\
+--with-sha1-asm \\\
+--with-sha1=/usr/include \\\
+--prefix=/usr/local \\\
+--sbin-path=/usr/local/bin \\\
+--conf-path=/usr/local/etc/nginx.conf \\\
+--error-log-path=/var/log/nginx/error.log \\\
+--http-log-path=/var/log/nginx/access.log \\\
+--http-client-body-temp-path=/var/spool/nginx/client_body_temp \\\
+--http-proxy-temp-path=/var/spool/nginx/proxy_temp \\\
+--http-fastcgi-temp-path=/var/spool/nginx/fastcgi_temp \\\
+--pid-path=/var/run/nginx/nginx.pid \\\
+--user=www \\\
+--group=www\
+\
+make\
+make install\
+\
+# couple of things that install misses out on:\
+mkdir /var/spool/nginx/\
+mkdir /usr/local/conf/\
+ln -s /usr/local/etc/mime.types /usr/local/conf/mime.types\
+\
+# pemissions\
+chown -R www:www /var/log/nginx/\
+chown -R www:www /var/run/nginx/\
+chown -R www:www /var/spool/nginx/\
+chown -R www:www /var/www/\
+\
+# auto-start\
+vi /etc/init.d/nginx\
+\
+\
+/*\
+\
+#Or try this one?\
+#http://wiki.nginx.org/RedHatNginxInitScript\
+\
+#/etc/init.d/nginx <http://ssh3.livejournal.com/29252.html>\
+\
+\
+\
+#!/bin/bash\
+# v.0.0.2\
+# nginx - This shell script takes care of starting and stopping nginx.\
+#\
+# chkconfig: - 60 50\
+# description: nginx [engine x] is light http web/proxy server\
+#              that answers incoming ftp service requests.\
+# processname: nginx\
+# config: /usr/local/etc/nginx.conf\
+\
+# Source function library.\
+. /etc/rc.d/init.d/functions\
+\
+# Source networking configuration.\
+. /etc/sysconfig/network\
+\
+# Check that networking is up.\
+[ $\{NETWORKING\} = "no" ] && exit 0\
+\
+[ -x /usr/local/bin/nginx ] || exit 0\
+\
+RETVAL=0\
+prog="nginx"\
+\
+start() \{\
+        # Start daemons.\
+        if [ -e /usr/local/etc/nginx.conf ] ; then\
+\
+            echo -n $"Starting $prog: "\
+            /usr/local/bin/nginx -t -c /usr/local/etc/nginx.conf &&\
+            /usr/local/bin/nginx &\
+                        RETVAL=$?\
+                        [ $RETVAL -eq 0 ] && \{\
+                           touch /var/lock/subsys/$prog\
+                           success $"$prog"\
+                        \}\
+                        echo\
+        else\
+                RETVAL=1\
+        fi\
+        return $RETVAL\
+\}\
+\
+stop() \{\
+        # Stop daemons.\
+        echo -n $"Shutting down $prog: "\
+        kill -3 `cat /var/run/nginx/nginx.pid 2>/dev/null`\
+        RETVAL=$?\
+        echo\
+        [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/$prog\
+        return $RETVAL\
+\}\
+\
+# See how we were called.\
+case "$1" in\
+  start)\
+        start\
+        ;;\
+  stop)\
+        stop\
+        ;;\
+  reconfigure)\
+        if [ -f /var/lock/subsys/$prog ]; then\
+            kill -1 `cat /var/run/nginx/nginx.pid 2>/dev/null`\
+            RETVAL=$?\
+        fi\
+        ;;\
+  status)\
+        status $prog\
+        RETVAL=$?\
+        ;;\
+  *)\
+        echo $"Usage: $0 \{start|stop|reconfigure|status\}"\
+        exit 1\
+esac\
+\
+exit $RETVAL\
+*/\
+\
+chmod 755 /etc/init.d/nginx\
+/sbin/chkconfig --add nginx\
+/sbin/chkconfig --level 345 nginx on\
+\
+# Nginx config\
+vi /usr/local/etc/nginx.conf\
+\
+/*\
+worker_processes 3;\
+#worker_rlimit_nofile 8192;\
+\
+events \{\
+  worker_connections  4096;\
+\}\
+\
+http \{\
+    types \{\
+      text/html          html;\
+      text/javascript    js;\
+      text/plain         txt;\
+    \}\
+    default_type  text/javascript;\
+\
+    log_format  main  '$remote_addr - $remote_user [$time_local] $request '\
+                      '"$status" $body_bytes_sent "$http_referer" '\
+                      '"$http_user_agent" "$http_x_forwarded_for"';\
+\
+    error_log /var/log/nginx/error.log error;\
+\
+    sendfile       on;\
+    tcp_nopush     on;\
+    tcp_nodelay    on;\
+\
+    keepalive_timeout  65;\
+\
+    gzip  on;\
+    gzip_comp_level 9;\
+    gzip_disable     "MSIE [1-6] \\.";\
+    gzip_types text/html text/javascript;\
+\
+    server \{\
+        listen       80;\
+        server_name  jscdn.net *.jscdn.net;\
+\
+        charset utf-8;\
+\
+        access_log  /var/www/jscdn.net/logs/access.log  main;\
+        error_log  /var/www/jscdn.net/logs/error.log  error;\
+\
+        location / \{\
+	   FileETag on;\
+            root   /var/www/jscdn.net/public;\
+            index  index.html;\
+        \}\
+\
+       location /nginx_status.json \{\
+         json_status on;\
+         access_log   off;\
+       \}\
+\
+        error_page  404 /404.txt;\
+\
+    \}\
+\}\
+\
+*/\
+\
+# Start 'er up\
+/etc/init.d/nginx start\
+\
+# disable root SSH login\
+vi /etc/ssh/sshd_config\
+# Change PermitRootLogin to no\
+/etc/init.d/sshd restart\
+\
+}
