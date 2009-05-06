@@ -1,4 +1,8 @@
-<h1>Dashboard</h1>
+<%
+
+@page_title = 'Dashboard'
+
+%><h1>Dashboard</h1>
 <section id="dns_servers">
     <header><h2>DNS servers</h2> <a href="/dns_servers/new">add</a></header>
     <dl><% @dns_servers.each do |server| %>

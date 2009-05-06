@@ -1,7 +1,12 @@
-<!DOCTYPE html >
+<%
+
+@page_title = @page_title.nil? ? 'mgmt.jscdn' : @page_title + ' - mgmt.jscdn'
+
+%>
+<D-y><!DOCTYPE html >
 <html lang="en">
 <head>
-    <title>Dashboard - JSCDN</title>
+    <title><%= @page_title %></title>
 </head>
 
 <body>

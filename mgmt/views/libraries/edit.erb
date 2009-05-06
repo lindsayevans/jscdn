@@ -1,4 +1,8 @@
-<h1>Editing library</h1>
+<%
+
+@page_title = 'Editing library'
+
+%><h1>Editing library</h1>
 
 <form action="/libraries/<%= @library[:id].to_s %>" method="post">
     <input type="hidden" name="_method" value="put">
