@@ -4,7 +4,7 @@ class AddLibraryToVersions < ActiveRecord::Migration
   end
 
   def self.down
-    delete_column :library_versions, :library_id
+    remove_column :library_versions, :library_id
   end
 end
 
