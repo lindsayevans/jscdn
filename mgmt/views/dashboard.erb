@@ -1,8 +1,7 @@
 <h1>Dashboard</h1>
 <section id="dns_servers">
     <header><h2>DNS servers</h2> <a href="/dns_servers/new">add</a></header>
-    <dl>
-<% @dns_servers.each do |server| %>
+    <dl><% @dns_servers.each do |server| %>
 	<dt><%= server.name %></dt>
 	<dd><%= server.online? ? 'online' : 'offline' %></dd>
 <% end %>
@@ -10,8 +9,7 @@
 </section>
 <section id="distribution_servers">
     <header><h2>Distribution servers</h2> <a href="/distrbution_servers/new">add</a></header>
-    <dl>
-<% @distribution_servers.each do |server| %>
+    <dl><% @distribution_servers.each do |server| %>
 	<dt><%= server.name %></dt>
 	<dd><%= server.online? ? 'online' : 'offline' %></dd>
 <% end %>
@@ -19,12 +17,9 @@
 </section>
 <section id="libraries">
     <header><h2>Libraries</h2> <a href="/libraries/new">add</a></header>
-    <dl>
-	<dt><a href="/libraries/1/edit">jQuery</a></dt>
-	<dd>1.3.2</dd>
-	<dt><a href="/libraries/2/edit">Raphaël</a></dt>
-	<dd>1.3.2</dd>
-	<dt><a href="/libraries/3/edit">cufón</a></dt>
-	<dd>?.?.?</dd>
+    <dl><% @libraries.each do |library| %>
+	<dt><%= link_to library %></dt>
+	<dd><%= library.version %></dd>
+<% end %>
     </dl>
 </section>
