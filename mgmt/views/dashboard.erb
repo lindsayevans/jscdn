@@ -18,8 +18,8 @@
 <section id="libraries">
     <header><h2>Libraries</h2> <a href="/libraries/new">add</a></header>
     <dl><% @libraries.each do |library| %>
-	<dt><%= link_to library %></dt>
+	<dt><%= link_to library %></dt><% if !library.latest.nil? %>
 	<dd><%= library.latest.version %></dd>
-<% end %>
+<% end end %>
     </dl>
 </section>

@@ -1,0 +1,11 @@
+<h1>Editing library</h1>
+
+<form action="/libraries/<%= @library[:id].to_s %>" method="post">
+    <input type="hidden" name="_method" value="put">
+
+<%= partial :'libraries/form' %>
+
+    <input type="submit" value="Update">
+
+</form>
+
