@@ -9,3 +9,11 @@ get '/' do
     erb :dashboard
 end
 
+
+helpers do
+
+    def link_to(what)
+	return '<a href="/libraries/'+what[:id].to_s+'/edit">'+what.name+'</a>'
+    end
+
+end
