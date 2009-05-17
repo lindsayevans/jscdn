@@ -4,7 +4,7 @@
 \paperw11900\paperh16840\margl1440\margr1440\vieww18020\viewh12160\viewkind0
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 # JSCDN distribution server setup - Fedora 10\
+\f0\fs24 \cf0 # JSCDN distribution server setup - Fedora 9/10\
 \
 # TODO: wget config files from master server, nginx optimisation (threads?, workers per cpu, worker_connections per 128MB RAM, worker_rlimit_nofile, hash buckets etc.); make this all an install script, then can be downloaded by 3rd party dist server owners; public key for jscdn user so we can SSH in with rsync; allow jscdn user to access nginx config? (maybe not)\
 # TODO: slice optimisation - http://wiki.slicehost.com/doku.php?id=harddiskoptimization\
@@ -12,15 +12,15 @@
 # TODO: api.jscdn.net - metadata on libs, latest v, release date, size etc. (static based on same principles as .js?) - mebee nginx module to stick JSONP callback into response - api. vs. same server? (pr. wont be able to use .js)\
 \
 \
-# create new users\
-groupadd www\
-useradd -g www www\
-useradd -g www jscdn\
-passwd jscdn\
+# Dependencies & stuff\
+yum -y update\
+yum -y install gcc gcc-c++ libc6 libc6-dev make less pcre pcre-devel libgcrypt libgcrypt-devel zlib-devel logrotate\
 \
-# Dependencies\
-yum update\
-yum install gcc gcc-c++ libc6 libc6-dev make less pcre pcre-devel libgcrypt libgcrypt-devel zlib-devel logrotate\
+# create new users\
+/usr/sbin/groupadd www\
+/usr/sbin/useradd -g www www\
+/usr/sbin/useradd -g www jscdn\
+passwd jscdn\
 \
 # Update open file limit (as root)\
 echo "65535" > /proc/sys/fs/file-max\
@@ -83,15 +83,18 @@ cd ~/src\
 wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-7.9.tar.gz\
 tar zxvf pcre-7.9.tar.gz\
 \
-wget -O nginx-static-etags.tar.gz http://github.com/mikewest/nginx-static-etags/tarball/master\
+wget http://cloud.github.com/downloads/lindsayevans/jscdn/nginx-static-etags.tar.gz\
 tar zxvf nginx-static-etags.tar.gz\
 rm nginx-static-etags.tar.gz\
-mv mikewest<TAB> nginx-static-etags\
 \
-wget -O nginx-json-status.tar.gz http://github.com/lindsayevans/nginx-json-status-module/tarball/master\
-tar zxvf nginx-json-status.tar.gz\
-rm nginx-json-status.tar.gz\
-mv lindsayevans<TAB> nginx-json-status\
+wget http://cloud.github.com/downloads/lindsayevans/nginx-json-status-module/nginx_json_status-0.0.1.tar.gz\
+tar zxvf nginx_json_status-0.0.1.tar.gz\
+rm nginx_json_status-0.0.1.tar.gz\
+\
+wget http://cloud.github.com/downloads/lindsayevans/nginx-static-concat/nginx_static_concat-0.0.1.tar.gz\
+tar zxvf nginx_static_concat-0.0.1.tar.gz\
+rm nginx_static_concat-0.0.1.tar.gz\
+\
 \
 # Download & configure Nginx\
 # TODO: optimise\
@@ -103,7 +106,8 @@ rm nginx-0.6.36.tar.gz\
 cd nginx-0.6.36\
 ./configure \\\
 --add-module=../nginx-static-etags \\\
---add-module=../nginx-json-status \\\
+--add-module=../nginx_json_status-0.0.1\\\
+--add-module=../nginx_static_concat-0.0.1 \\\
 --with-http_stub_status_module \\\
 --with-http_gzip_static_module \\\
 --without-http_ssi_module \\\
