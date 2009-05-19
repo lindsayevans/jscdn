@@ -6,7 +6,7 @@
 <section id="dns_servers">
     <header><h2>DNS servers</h2> <a href="/dns_servers/new">add</a></header>
     <dl><% @dns_servers.each do |server| %>
-	<dt><%= server.name %></dt>
+	<dt><%= link_to_dns_server server %></dt>
 	<dd><%= server.online? ? 'online' : 'offline' %></dd>
 <% end %>
     </dl>
@@ -14,7 +14,7 @@
 <section id="distribution_servers">
     <header><h2>Distribution servers</h2> <a href="/distribution_servers/new">add</a></header>
     <dl><% @distribution_servers.each do |server| %>
-	<dt><%= server.name %></dt>
+	<dt><%= link_to_distribution_server server %></dt>
 	<dd><%= server.online? ? 'online' : 'offline' %></dd>
 <% end %>
     </dl>
@@ -22,7 +22,7 @@
 <section id="libraries">
     <header><h2>Libraries</h2> <a href="/libraries/new">add</a></header>
     <dl><% @libraries.each do |library| %>
-	<dt><%= link_to library %></dt><% if !library.latest.nil? %>
+	<dt><%= link_to_library library %></dt><% if !library.latest.nil? %>
 	<dd><%= library.latest.version %></dd>
 <% end end %>
     </dl>

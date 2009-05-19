@@ -104,7 +104,7 @@ put '/distribution_servers' do
 end
 
 
-get '/dns_servers/:id' do
+get '/distribution_servers/:id' do
     @distribution_server = DistributionServer.find params[:id]
    erb :'distribution_servers/edit'
 end
@@ -130,8 +130,14 @@ helpers do
 	erb page, options.merge!(:layout => false)
     end
 
-    def link_to(what) # TODO: pretty much everything
+    def link_to_library(what)
 	return '<a href="/libraries/'+what[:id].to_s+'">'+what.name+'</a>'
+    end
+    def link_to_dns_server(what)
+	return '<a href="/dns_servers/'+what[:id].to_s+'">'+what.name+'</a>'
+    end
+    def link_to_distribution_server(what)
+	return '<a href="/distribution_servers/'+what[:id].to_s+'">'+what.name+'</a>'
     end
 
 end
