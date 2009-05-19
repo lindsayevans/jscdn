@@ -1,0 +1,14 @@
+<%
+
+@page_title = 'Adding new DNS server'
+
+%><h1>Adding new DNS server</h1>
+
+<form action="/dns_servers" method="post">
+    <input type="hidden" name="_method" value="put">
+
+<%= partial :'dns_servers/form' %>
+
+    <input type="submit" value="Create">
+
+</form>

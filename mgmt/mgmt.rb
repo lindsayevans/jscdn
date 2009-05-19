@@ -47,6 +47,82 @@ put '/libraries/:id' do
     end
 end
 
+
+# DNS servers
+get '/dns_servers/new' do
+    @dns_server = DnsServer.new
+    erb :'dns_servers/new'
+end
+
+put '/dns_servers' do
+    @dns_server = DnsServer.new params[:dns_server]
+
+    if @dns_server.save
+	redirect '/'
+    else
+	# Error
+        erb :'dns_servers/new'
+    end
+end
+
+
+get '/dns_servers/:id' do
+    @dns_server = DnsServer.find params[:id]
+   erb :'dns_servers/edit'
+end
+
+
+put '/dns_servers/:id' do
+    @dns_server = DnsServer.find params[:id]
+
+    @dns_server.update_attributes params[:dns_server]
+
+    if @dns_server.save
+	redirect '/'
+    else
+	# Error
+        erb :'dns_server/edit'
+    end
+end
+
+
+# Distribution servers
+get '/distribution_servers/new' do
+    @distribution_server = DistributionServer.new
+    erb :'distribution_servers/new'
+end
+
+put '/distribution_servers' do
+    @distribution_server = DistributionServer.new params[:distribution_server]
+
+    if @distribution_server.save
+	redirect '/'
+    else
+	# Error
+        erb :'distribution_servers/new'
+    end
+end
+
+
+get '/dns_servers/:id' do
+    @distribution_server = DistributionServer.find params[:id]
+   erb :'distribution_servers/edit'
+end
+
+
+put '/distribution_servers/:id' do
+    @distribution_server = DistributionServer.find params[:id]
+
+    @distribution_server.update_attributes params[:distribution_server]
+
+    if @distribution_server.save
+	redirect '/'
+    else
+	# Error
+        erb :'distribution_servers/edit'
+    end
+end
+
 helpers do
 
     # Usage: partial :foo    

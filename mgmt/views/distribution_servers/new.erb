@@ -1,0 +1,14 @@
+<%
+
+@page_title = 'Adding new distribution server'
+
+%><h1>Adding new distribution server</h1>
+
+<form action="/distribution_servers" method="post">
+    <input type="hidden" name="_method" value="put">
+
+<%= partial :'distribution_servers/form' %>
+
+    <input type="submit" value="Create">
+
+</form>

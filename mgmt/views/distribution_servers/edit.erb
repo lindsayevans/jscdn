@@ -1,0 +1,15 @@
+<%
+
+@page_title = 'Editing distribution server'
+
+%><h1>Editing distribution server</h1>
+
+<form action="/distribution_servers/<%= @distribution_server[:id].to_s %>" method="post">
+    <input type="hidden" name="_method" value="put">
+
+<%= partial :'distribution_servers/form' %>
+
+    <input type="submit" value="Update">
+
+</form>
+

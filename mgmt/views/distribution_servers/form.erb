@@ -1,0 +1,24 @@
+
+    <label for="distribution-server-name">Name</label>
+    <input type="text" name="distribution_server[name]" id="distribution-server-name" value="<%= @distribution_server[:name] %>">
+
+    <label for="distribution-server-ip-address">IP address</label>
+    <input type="text" name="distribution_server[ip_address"]" id="distribution-server-ip-address"" value="<%= @distribution_server[:ip_address] %>">
+
+    <label for="distribution-server-domain-name">Domain name</label>
+    <input type="text" name="distribution_server[domain_name]" id="distribution-server-domain-name" value="<%= @distribution_server[:domain_name] %>">
+
+    <label for="distribution-server-ssh-key-file">SSH key file</label>
+    <input type="file" name="distribution_server[ssh_key_file]" id="distribution-server-ssh-key-file" value="<%= @distribution_server[:ssh_key_file] %>">
+
+    <label>Online</label>
+    <label for="distribution-server-online-true"><input type="radio" name="distribution_server[online]" id="distribution-server-online-true" value="true"<%= ' checked' if @distribution_server.online? %>> Yes</label>
+    <label for="distribution-server-online-false"><input type="radio" name="distribution_server[online]" id="distribution-server-online-false" value="false"<%= ' checked' if !@distribution_server.online? %>> No</label>
+
+    <label for="distribution-server-region">Region</label>
+    <select name="distribution_server[region]" id="distribution-server-region">
+	<option value="au"<%= ' selected' if @distribution_server[:region] == 'au' %>>AU</option>
+	<option value="eu"<%= ' selected' if @distribution_server[:region] == 'eu' %>>EU</option>
+	<option value="us"<%= ' selected' if @distribution_server[:region] == 'us' %>>US</option>
+    </select>
+

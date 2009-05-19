@@ -12,7 +12,7 @@
     </dl>
 </section>
 <section id="distribution_servers">
-    <header><h2>Distribution servers</h2> <a href="/distrbution_servers/new">add</a></header>
+    <header><h2>Distribution servers</h2> <a href="/distribution_servers/new">add</a></header>
     <dl><% @distribution_servers.each do |server| %>
 	<dt><%= server.name %></dt>
 	<dd><%= server.online? ? 'online' : 'offline' %></dd>

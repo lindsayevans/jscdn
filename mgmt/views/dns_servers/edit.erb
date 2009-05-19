@@ -1,0 +1,15 @@
+<%
+
+@page_title = 'Editing DNS server'
+
+%><h1>Editing DNS server</h1>
+
+<form action="/dns_servers/<%= @dns_server[:id].to_s %>" method="post">
+    <input type="hidden" name="_method" value="put">
+
+<%= partial :'dns_servers/form' %>
+
+    <input type="submit" value="Update">
+
+</form>
+

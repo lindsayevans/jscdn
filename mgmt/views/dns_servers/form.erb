@@ -1,0 +1,24 @@
+
+    <label for="dns-server-name">Name</label>
+    <input type="text" name="dns_server[name]" id="dns-server-name" value="<%= @dns_server[:name] %>">
+
+    <label for="dns-server-ip-address">IP address</label>
+    <input type="text" name="dns_server[ip_address"]" id="dns-server-ip-address"" value="<%= @dns_server[:ip_address] %>">
+
+    <label for="dns-server-domain-name">Domain name</label>
+    <input type="text" name="dns_server[domain_name]" id="dns-server-domain-name" value="<%= @dns_server[:domain_name] %>">
+
+    <label for="dns-server-ssh-key-file">SSH key file</label>
+    <input type="file" name="dns_server[ssh_key_file]" id="dns-server-ssh-key-file" value="<%= @dns_server[:ssh_key_file] %>">
+
+    <label>Online</label>
+    <label for="dns-server-online-true"><input type="radio" name="dns_server[online]" id="dns-server-online-true" value="true"<%= ' checked' if @dns_server.online? %>> Yes</label>
+    <label for="dns-server-online-false"><input type="radio" name="dns_server[online]" id="dns-server-online-false" value="false"<%= ' checked' if !@dns_server.online? %>> No</label>
+
+    <label for="dns-server-region">Region</label>
+    <select name="dns_server[region]" id="dns-server-region">
+	<option value="au"<%= ' selected' if @dns_server[:region] == 'au' %>>AU</option>
+	<option value="eu"<%= ' selected' if @dns_server[:region] == 'eu' %>>EU</option>
+	<option value="us"<%= ' selected' if @dns_server[:region] == 'us' %>>US</option>
+    </select>
+
