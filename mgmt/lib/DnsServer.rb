@@ -13,15 +13,19 @@ class DnsServer < ActiveRecord::Base
 	fail = {:text => 'offline', :class => 'offline'}
 	win = {:text => 'online', :class => 'online'}
 	
-	res = Net::DNS::Resolver.new
-	res.nameservers = ip_address
-	packet = res.send "jscdn.net"
-
-	if packet.nil? || !online?
+	begin
+	    res = Net::DNS::Resolver.new
+	    res.nameservers = ip_address
+	    packet = res.send "jscdn.net"
+	    if packet.nil? || !online?
+		fail
+	    else
+		win
+	    end
+	rescue
 	    fail
-	else
-	    win
 	end
+
 
     end
 

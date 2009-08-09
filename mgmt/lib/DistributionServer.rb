@@ -1,3 +1,5 @@
+require 'net/http'
+
 class DistributionServer < ActiveRecord::Base
 
     def online?
@@ -5,7 +7,21 @@ class DistributionServer < ActiveRecord::Base
     end
 
     def status
-	{:text => 'online', :class => 'online'}
+
+	fail = {:text => 'offline', :class => 'offline'}
+	win = {:text => 'online', :class => 'online'}
+
+	begin
+	    response = Net::HTTP.get_response domain_name, "/nginx_status.json"
+	    if !response.is_a?(Net::HTTPSuccess) || !online?
+		fail
+	    else
+		win
+	    end
+	rescue
+	    fail
+	end
+
     end
 
 end
