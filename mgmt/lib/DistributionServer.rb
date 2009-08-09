@@ -4,4 +4,8 @@ class DistributionServer < ActiveRecord::Base
 	online
     end
 
+    def status
+	{:text => 'online', :class => 'online'}
+    end
+
 end

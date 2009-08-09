@@ -10,6 +10,13 @@ get '/' do
     erb :dashboard
 end
 
+# Server status page
+get '/status' do
+    @distribution_servers = DistributionServer.all :order => :name
+    @dns_servers = DnsServer.all :order => :name
+    erb :status
+end
+
 # Libraries
 get '/libraries/new' do
     @library = Library.new

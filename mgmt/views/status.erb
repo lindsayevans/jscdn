@@ -1,0 +1,29 @@
+<%
+
+@page_title = 'Server status'
+
+%><h1>Server status</h1>
+<section id="distribution_servers">
+    <header><h2>Distribution servers</h2></header>
+    <dl><% @distribution_servers.each do |server|
+    status = server.status
+%>
+	<dt><%= server.name %></dt>
+	<dd><a href="http://<%= server.domain_name %>/"><%= server.domain_name %></a></dd>
+	<dd><%= server.ip_address %></dd>
+	<dd class="<%= status[:class] %>"><%= status[:text] %></dd>
+<% end %>
+    </dl>
+</section>
+<section id="dns_servers">
+    <header><h2>DNS servers</h2></header>
+    <dl><% @dns_servers.each do |server| 
+    status = server.status
+%>
+	<dt><%= server.name %></dt>
+	<dd><%= server.domain_name %></dd>
+	<dd><%= server.ip_address %></dd>
+	<dd class="<%= status[:class] %>"><%= status[:text] %></dd>
+<% end %>
+    </dl>
+</section>
